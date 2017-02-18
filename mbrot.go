@@ -8,20 +8,19 @@ import (
 	"math/cmplx"
 	"math/rand"
 	"net/http"
-	"text/template"
 	"strconv"
+	"text/template"
 )
 
 const (
-	ViewWidth = 640
+	ViewWidth  = 640
 	ViewHeight = 480
-	MaxEscape = 64
+	MaxEscape  = 64
 )
 
 var indexTemplate *template.Template
 var palette []color.RGBA
 var escapeColor color.RGBA
-
 
 func init() {
 	var err error
@@ -31,16 +30,19 @@ func init() {
 	}
 
 	palette = make([]color.RGBA, MaxEscape)
-	for i := 0; i < MaxEscape - 1; i++ {
-		palette[i] = color.RGBA{uint8(rand.Intn(256)), uint8(rand.Intn(256)), uint8(rand.Intn(256)), 255}
+	for i := 0; i < MaxEscape-1; i++ {
+		palette[i] = color.RGBA{
+			uint8(rand.Intn(256)),
+			uint8(rand.Intn(256)),
+			uint8(rand.Intn(256)),
+			255}
 	}
 	escapeColor = color.RGBA{0, 0, 0, 0}
 }
 
-
 func escape(c complex128) int {
 	z := c
-	for i := 0; i < MaxEscape - 1; i++ {
+	for i := 0; i < MaxEscape-1; i++ {
 		if cmplx.Abs(z) > 2 {
 			return i
 		}
@@ -49,30 +51,19 @@ func escape(c complex128) int {
 	return MaxEscape - 1
 }
 
-
-func pixelToPoint(viewCenter complex128, x, y, imgWidth, imgHeight int, zoomWidth float64) complex128 {
-	pixelWidth := zoomWidth / float64(imgWidth)
-	pixelHeight := pixelWidth
-	viewHeight := (float64(imgHeight) / float64(imgWidth)) * zoomWidth
-	left := (real(viewCenter) - (zoomWidth / 2)) + pixelWidth / 2
-	top := (imag(viewCenter) - (viewHeight / 2)) + pixelHeight / 2
-	return complex(left + float64(x)*pixelWidth, top + float64(y)*pixelHeight)
-}
-
-
 func generate(imgWidth int, imgHeight int, viewCenter complex128, radius float64) image.Image {
 	m := image.NewRGBA(image.Rect(0, 0, imgWidth, imgHeight))
 	zoomWidth := radius * 2
 	pixelWidth := zoomWidth / float64(imgWidth)
 	pixelHeight := pixelWidth
 	viewHeight := (float64(imgHeight) / float64(imgWidth)) * zoomWidth
-	left := (real(viewCenter) - (zoomWidth / 2)) + pixelWidth / 2
-	top := (imag(viewCenter) - (viewHeight / 2)) + pixelHeight / 2
+	left := (real(viewCenter) - (zoomWidth / 2)) + pixelWidth/2
+	top := (imag(viewCenter) - (viewHeight / 2)) + pixelHeight/2
 	for x := 0; x < imgWidth; x++ {
 		for y := 0; y < imgHeight; y++ {
-			coord := complex(left + float64(x)*pixelWidth, top + float64(y)*pixelHeight)
+			coord := complex(left+float64(x)*pixelWidth, top+float64(y)*pixelHeight)
 			f := escape(coord)
-			if f == MaxEscape -1 {
+			if f == MaxEscape-1 {
 				m.Set(x, y, escapeColor)
 			}
 			m.Set(x, y, palette[f])
@@ -81,27 +72,13 @@ func generate(imgWidth int, imgHeight int, viewCenter complex128, radius float64
 	return m
 }
 
-
-func SafeInt(s string, min, max, def int) int {
-	i, err := strconv.Atoi(s)
-    if err != nil {
-		return def
-    }
-	if i < min || i >= max {
-		return def
-	}
-	return i
-}
-
-
 func SafeFloat64(s string, def float64) float64 {
 	f, err := strconv.ParseFloat(s, 64)
-    if err != nil {
+	if err != nil {
 		return def
-    }
+	}
 	return f
 }
-
 
 func pic(w http.ResponseWriter, r *http.Request) {
 	mx := SafeFloat64(r.FormValue("mx"), 0.0)
@@ -116,17 +93,6 @@ func pic(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-func zoom(w http.ResponseWriter, r *http.Request) {
-	m := generate(ViewWidth, ViewHeight, complex128(0), 4)
-	w.Header().Set("Content-Type", "image/png")
-	err := png.Encode(w, m)
-	if err != nil {
-		log.Println("png.Encode:", err)
-	}
-}
-
-
 func index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	vars := make(map[string]interface{})
@@ -136,9 +102,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 	indexTemplate.Execute(w, vars)
 }
 
-
 func main() {
-	log.Println("Listening")
+	log.Println("Listening - open http://localhost:8090/ in browser")
 	defer log.Println("Exiting")
 
 	http.HandleFunc("/", index)

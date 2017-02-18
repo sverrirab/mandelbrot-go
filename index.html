@@ -3,12 +3,6 @@
 	<title>{{.Title}}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--style>
-        #pic {
-            width: 100%;
-            height: auto;
-        }
-    </style-->
 	<script>
         var mx = 0.0;
         var my = 0.0;
@@ -34,8 +28,6 @@
 	<script>
         var pic = document.getElementById("pic");
         pic.addEventListener("click", function(e) {
-            console.log("click", e);
-            console.log("offset:", e.offsetX, e.offsetY);
             zoomAt(pic.width, pic.height, e.offsetX, e.offsetY)
             pic.src = "/pic?mx=" + mx + "&my=" + my + "&radius=" + radius;
         });
