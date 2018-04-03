@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"image/png"
 	"log"
-	"math/cmplx"
+//	"math/cmplx"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -43,10 +43,10 @@ func init() {
 func escape(c complex128) int {
 	z := c
 	for i := 0; i < MaxEscape-1; i++ {
-		if cmplx.Abs(z) > 2 {
+		if real(z)*real(z)+imag(z)+imag(z) > 4 {
 			return i
 		}
-		z = cmplx.Pow(z, 2) + c
+		z = z*z + c
 	}
 	return MaxEscape - 1
 }
