@@ -65,21 +65,15 @@ func generate(imgWidth int, imgHeight int, viewCenter complex128, radius float64
 	wgx.Add(imgWidth)
 	for x := 0; x < imgWidth; x++ {
 		go func(xx int) {
-			var wgy sync.WaitGroup
-			wgy.Add(imgHeight)
 			defer wgx.Done()
 			for y := 0; y < imgHeight; y++ {
-				go func(yy int) {
-					defer wgy.Done()
-					coord := complex(left+float64(xx)*pixelWidth, top+float64(yy)*pixelHeight)
-					f := escape(coord)
-					if f == MaxEscape-1 {
-						m.Set(xx, yy, escapeColor)
-					}
-					m.Set(xx, yy, palette[f])
-				}(y)
+				coord := complex(left+float64(xx)*pixelWidth, top+float64(y)*pixelHeight)
+				f := escape(coord)
+				if f == MaxEscape-1 {
+					m.Set(xx, y, escapeColor)
+				}
+				m.Set(xx, y, palette[f])
 			}
-			wgy.Wait()
 		}(x)
 	}
 	wgx.Wait()
