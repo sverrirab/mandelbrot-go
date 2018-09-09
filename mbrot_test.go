@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestEscape(t *testing.T){
+func TestEscape(t *testing.T) {
 	data := []struct {
 		c complex128
 		e int
@@ -23,9 +23,16 @@ func TestEscape(t *testing.T){
 	}
 }
 
-func BenchmarkEscape(b *testing.B){
+func BenchmarkEscape(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		escape(0.35+0.21i)
+	}
+}
+
+func BenchmarkGenerate(b *testing.B) {
+	for i := 0; i < 10; i++ {
+		center := 1.5+0i + 0.1+0.1i * complex(float64(i), 2*float64(i));
+		generate(320, 200, center, 0.5)
 	}
 }
 
