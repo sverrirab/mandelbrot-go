@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"sync"
 	"text/template"
 )
 
@@ -59,16 +60,23 @@ func generate(imgWidth int, imgHeight int, viewCenter complex128, radius float64
 	viewHeight := (float64(imgHeight) / float64(imgWidth)) * zoomWidth
 	left := (real(viewCenter) - (zoomWidth / 2)) + pixelWidth/2
 	top := (imag(viewCenter) - (viewHeight / 2)) + pixelHeight/2
+
+	var wgx sync.WaitGroup
+	wgx.Add(imgWidth)
 	for x := 0; x < imgWidth; x++ {
-		for y := 0; y < imgHeight; y++ {
-			coord := complex(left+float64(x)*pixelWidth, top+float64(y)*pixelHeight)
-			f := escape(coord)
-			if f == MaxEscape-1 {
-				m.Set(x, y, escapeColor)
+		go func(xx int) {
+			defer wgx.Done()
+			for y := 0; y < imgHeight; y++ {
+				coord := complex(left+float64(xx)*pixelWidth, top+float64(y)*pixelHeight)
+				f := escape(coord)
+				if f == MaxEscape-1 {
+					m.Set(xx, y, escapeColor)
+				}
+				m.Set(xx, y, palette[f])
 			}
-			m.Set(x, y, palette[f])
-		}
+		}(x)
 	}
+	wgx.Wait()
 	return m
 }
 
