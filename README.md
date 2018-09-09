@@ -18,7 +18,9 @@ creates images on the fly.  Just over 100 lines of golang code.
 
 There are many more better tools to view the mandelbrot set but this is a fun way to play with go.
 
+# Build status
+
+![Build Status](https://travis-ci.com/sverrirab/mandelbrot-go.svg?branch=master)
+
 # License
-MIT - Feel free to do whatever you like.
-
-
+MIT (very permissive)
