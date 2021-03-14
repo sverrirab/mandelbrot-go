@@ -4,12 +4,18 @@ Simple Mandelbrot set webservice written in go (golang).
 Install [golang](https://golang.org/doc/install), pull the code and:
 
 ```bash
-go run mbrot.go
+go run main.go
 ```
 
 Browse to [localhost:8090](http://localhost:8090/) and view the results:
 
 ![Mandelbrot go in action](./docs/media/mbrot.gif "Mandelbrot go in action")
+
+## Testing 
+
+```bash
+go test
+```
 
 ## Background
 This was written by me as an exercise in learning go.  The code is as simple as possibly demonstrating a simple

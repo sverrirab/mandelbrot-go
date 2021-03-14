@@ -1,0 +1,2 @@
+# We don't want to check in the built binary
+mandelbrot-go
