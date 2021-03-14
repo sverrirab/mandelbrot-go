@@ -4,7 +4,7 @@ Simple Mandelbrot set webservice written in go (golang).
 Install [golang](https://golang.org/doc/install), pull the code and:
 
 ```bash
-go run main.go
+go run .
 ```
 
 Browse to [localhost:8090](http://localhost:8090/) and view the results:

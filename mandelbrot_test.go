@@ -42,12 +42,12 @@ func BenchmarkGenerate(b *testing.B) {
 /*
 func escape(c complex128) int {
 	z := c
-	for i := 0; i < MaxEscape-1; i++ {
+	for i := 0; i < _MaxEscape-1; i++ {
 		if real(z)*real(z)+imag(z)*imag(z) > 4 {
 			return i
 		}
 		z = z*z + c
 	}
-	return MaxEscape - 1
+	return _MaxEscape - 1
 }
 */
